@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Document</title>
+      <style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-200 flex items-center justify-center h-screen">
+    <div class="w-full max-w-md bg-white p-8 rounded-2xl shadow-lg">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-2">Create an Account</h2>
+        <p class="text-gray-500 text-center mb-8">Get started with GrammarFix for free.</p>
+        <form>
+
+          
+            <div class="mb-4">
+                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="text" name="email" placeholder="Enter Email" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
+                <div class="email-error text-red-500 text-sm mt-1"></div>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                <input type="password" name="password" placeholder="Enter password" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" required />
+                <div class="password-error text-red-500 text-sm mt-1"></div>
+            </div>
+
+            <button class="w-full bg-blue-500 text-white hover:bg-blue-700 foont-bold py-2 px-4 rounded-lg transition">Log in</button>
+            <p class="text-center text-sm text-gray-600 mt-4">
+             Don't have an account? <a class="font-medium text-blue-600 hover:text-blue-500" href="/signup">Sign up</a></p>
+
+        </form>
+    </div>
+
+    <script>
+       const form = document.querySelector('form');
+       const emailError = document.querySelector('.email-error');
+       const passwordError = document.querySelector('.password-error');
+
+
+       form.addEventListener('submit' , async(e)=>{
+          e.preventDefault();
+          
+        //   reset error );
+            emailError.textContent = '';
+            passwordError.textContent = '';
+
+            // get value 
+            const email = form.email.value;
+            const password = form.password.value;
+
+            try{
+               const res = await fetch('/login',{
+                method:'POST',
+                body: JSON.stringify({email , password}),
+                headers: {'Content-Type': 'application/json'}
+               })
+
+               const data = await res.json();
+               console.log(data);
+               if(data.errors){
+                    emailError.textContent = data.errors.email;
+                    passwordError.textContent = data.errors.password;
+               }
+               if(data.user){
+                location.assign('/');
+               }
+            }
+            catch(err){
+                 console.log(err);
+            }
+          
+       });
+    </script>
+</body>
+</html>
